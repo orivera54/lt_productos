@@ -1,0 +1,18 @@
+# Dockerfile - Products Service
+#
+# Autor: Oscar Javier Rivera
+# Descripción: Imagen Docker para el microservicio de productos
+
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm ci --only=production
+
+COPY . .
+
+EXPOSE 3001
+
+CMD ["npm", "start"]

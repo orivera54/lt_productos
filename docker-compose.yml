@@ -1,0 +1,75 @@
+# Docker Compose - Microservicios de Productos e Inventario
+#
+# Autor: Oscar Javier Rivera
+# Descripción: Orquestación de servicios con PostgreSQL
+# Versión: 1.0.0
+
+version: '3.8'
+
+services:
+  products-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: products_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - products-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  inventory-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: inventory_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - inventory-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  products-service:
+    build: ./products-service
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      DATABASE_URL: postgresql://postgres:postgres@products-db:5432/products_db
+      API_KEY: secret-key-123
+      NODE_ENV: production
+    depends_on:
+      products-db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  inventory-service:
+    build: ./inventory-service
+    ports:
+      - "3002:3002"
+    environment:
+      PORT: 3002
+      DATABASE_URL: postgresql://postgres:postgres@inventory-db:5432/inventory_db
+      API_KEY: secret-key-123
+      PRODUCTS_SERVICE_URL: http://products-service:3001
+      NODE_ENV: production
+    depends_on:
+      inventory-db:
+        condition: service_healthy
+      products-service:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  products-data:
+  inventory-data:

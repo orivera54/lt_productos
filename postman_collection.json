@@ -1,0 +1,176 @@
+{
+  "info": {
+    "name": "Microservicios - Productos e Inventario",
+    "description": "Colección de Postman para probar los microservicios",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "products_url",
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "inventory_url",
+      "value": "http://localhost:3002"
+    },
+    {
+      "key": "api_key",
+      "value": "secret-key-123"
+    }
+  ],
+  "item": [
+    {
+      "name": "Products Service",
+      "item": [
+        {
+          "name": "Crear Producto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/vnd.api+json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"type\": \"products\",\n    \"attributes\": {\n      \"nombre\": \"Laptop Dell XPS 15\",\n      \"precio\": 1299.99,\n      \"descripcion\": \"Laptop de alto rendimiento con procesador Intel i7\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{products_url}}/api/products",
+              "host": ["{{products_url}}"],
+              "path": ["api", "products"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Producto",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{products_url}}/api/products/1",
+              "host": ["{{products_url}}"],
+              "path": ["api", "products", "1"]
+            }
+          }
+        },
+        {
+          "name": "Listar Productos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{products_url}}/api/products",
+              "host": ["{{products_url}}"],
+              "path": ["api", "products"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inventory Service",
+      "item": [
+        {
+          "name": "Consultar Inventario",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{inventory_url}}/api/inventory/1",
+              "host": ["{{inventory_url}}"],
+              "path": ["api", "inventory", "1"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar Inventario",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/vnd.api+json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"type\": \"inventory\",\n    \"id\": \"1\",\n    \"attributes\": {\n      \"cantidad\": 50\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{inventory_url}}/api/inventory/1",
+              "host": ["{{inventory_url}}"],
+              "path": ["api", "inventory", "1"]
+            }
+          }
+        },
+        {
+          "name": "Realizar Compra",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/vnd.api+json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"type\": \"purchases\",\n    \"attributes\": {\n      \"producto_id\": 1,\n      \"cantidad\": 2\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{inventory_url}}/api/purchases",
+              "host": ["{{inventory_url}}"],
+              "path": ["api", "purchases"]
+            }
+          }
+        },
+        {
+          "name": "Historial de Compras",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{inventory_url}}/api/purchases/history/1",
+              "host": ["{{inventory_url}}"],
+              "path": ["api", "purchases", "history", "1"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
